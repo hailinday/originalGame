@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -20,6 +22,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     Font titleFont2;
     Timer frameDraw;
     Timer alienSpawn;
+    Rocketship rocket = new Rocketship(250,700,50,50);
+    ObjectManager manage = new ObjectManager(rocket);
+    public static BufferedImage image;
+   	public static boolean needImage = true;
+   	public static boolean gotImage = false;	
 	@Override
 	public void paintComponent(Graphics g){
 		if(currentState == MENU){
@@ -36,15 +43,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	titleFont2 = new Font("Arial", Font.PLAIN, 26);
     	frameDraw = new Timer(1000/60,this);
         frameDraw.start();
-        //if (needImage) {
-        //    loadImage ("space.png");
-        //}
+        if (needImage) {
+            loadImage ("space.jpg");
+        }
     }
 	void updateMenuState() {
 		
     }
     void updateGameState() {
-    	
+    	rocket.move();
     }
     void updateEndState() {
     	
@@ -60,13 +67,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	g.drawString("Press SPACE for instructions", 75, 600);
     }
     void drawGameState(Graphics g) {
-    //	if (gotImage) {
-    //		g.drawImage(image, 0, 0, runner.WIDTH, runner.HEIGHT, null);
-    //	} else {
-    //		g.setColor(Color.BLACK);
-      //  	g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
-    //	}
-    //	manage.draw(g);
+    	if (gotImage) {
+    		g.drawImage(image, 0, 0, runner.WIDTH, runner.HEIGHT, null);
+    	} else {
+    		g.setColor(Color.BLACK);
+        	g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
+    	}
+    	manage.draw(g);
     }
     void drawEndState(Graphics g)  {
     	g.setColor(Color.RED);
@@ -108,26 +115,26 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		}   
 		if (currentState == GAME) {
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
-			    //rocket.up();
-			   // if (rocket.y <= 0) {
-				//	rocket.y = 0;
-				//}
-			} else if (e.getKeyCode()==KeyEvent.VK_DOWN) {
-			  //  rocket.down();
-			   // if (rocket.y >= LeagueInvaders.HEIGHT-rocket.height-25) {
-				//	rocket.y = LeagueInvaders.HEIGHT-rocket.height-25;
-				//}
-			} else if (e.getKeyCode()==KeyEvent.VK_LEFT) {
-			   // rocket.left();
-			    //if (rocket.x <= 0) {
-				//	rocket.x = 0;
-				//}
-			} else if (e.getKeyCode()==KeyEvent.VK_RIGHT) {
-			    //rocket.right();
-			    //if (rocket.x >= LeagueInvaders.WIDTH-rocket.width) {
-				//	rocket.x = LeagueInvaders.WIDTH-rocket.width;
-				//}			
-			} else if(e.getKeyCode()==KeyEvent.VK_SPACE) {
+			    rocket.Up = true;
+			    if (rocket.y <= 0) {
+					rocket.y = 0;
+				}
+			} if (e.getKeyCode()==KeyEvent.VK_DOWN) {
+			    rocket.Down = true;
+			    if (rocket.y >= gameRunner.HEIGHT-rocket.height-25) {
+					rocket.y = gameRunner.HEIGHT-rocket.height-25;
+				}
+			} if (e.getKeyCode()==KeyEvent.VK_LEFT) {
+			    rocket.Left = true;
+			    if (rocket.x <= 0) {
+					rocket.x = 0;
+				}
+			} if (e.getKeyCode()==KeyEvent.VK_RIGHT) {
+			    rocket.Right = true;
+			    if (rocket.x >= gameRunner.WIDTH-rocket.width) {
+					rocket.x = gameRunner.WIDTH-rocket.width;
+				}			
+			} if(e.getKeyCode()==KeyEvent.VK_SPACE) {
 				//manage.addProjectile(rocket.getProjectile());
 			}
 		}
@@ -135,6 +142,27 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+		if (e.getKeyCode()==KeyEvent.VK_UP) {
+		    rocket.Up = false;
+		} if (e.getKeyCode()==KeyEvent.VK_DOWN) {
+		    rocket.Down = false;
+		   
+		} if (e.getKeyCode()==KeyEvent.VK_LEFT) {
+		    rocket.Left = false;
+		    
+		} if (e.getKeyCode()==KeyEvent.VK_RIGHT) {
+		    rocket.Right = false;	
+		}
+	}
+	void loadImage(String imageFile) {
+	    if (needImage) {
+	        try {
+	            image = ImageIO.read(this.getClass().getResourceAsStream(imageFile));
+		    gotImage = true;
+	        } catch (Exception e) {
+	            
+	        }
+	        needImage = false;
+	    }
 	}
 }
