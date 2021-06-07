@@ -24,14 +24,14 @@ public class ObjectManager implements ActionListener {
 	}
 
 	void addAliens() {
-		aliens.add(new Alien(random.nextInt(gameRunner.WIDTH), 0, 50, 50));
+		aliens.add(new Alien(random.nextInt(runner.WIDTH), 0, 50, 50));
 	}
 
 	void update() {
 		rocket.update();
 		for (int i = 0; i < aliens.size(); i++) {
 			aliens.get(i).update();
-			if (aliens.get(i).y >= gameRunner.HEIGHT) {
+			if (aliens.get(i).y >= runner.HEIGHT) {
 				aliens.get(i).isActive = false;
 			}
 		}

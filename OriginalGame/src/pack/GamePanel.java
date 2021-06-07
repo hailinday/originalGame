@@ -25,6 +25,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     Rocketship rocket = new Rocketship(250,700,50,50);
     ObjectManager manage = new ObjectManager(rocket);
     public static BufferedImage image;
+    public static BufferedImage image2;
+    public static BufferedImage image3;
+    public static BufferedImage image4;
+    public static BufferedImage image5;
    	public static boolean needImage = true;
    	public static boolean gotImage = false;	
 	@Override
@@ -43,9 +47,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	titleFont2 = new Font("Arial", Font.PLAIN, 26);
     	frameDraw = new Timer(1000/60,this);
         frameDraw.start();
-        if (needImage) {
-            loadImage ("space.jpg");
-        }
+        image = loadImage ("space.jpg");
+        image2 = loadImage("loss.png");
+        image3 = loadImage("boss.png");
+        image4 = loadImage("title.png");
+        image5 = loadImage("end.png");
     }
 	void updateMenuState() {
 		
@@ -57,11 +63,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	
     }
     void drawMenuState(Graphics g) {
-    	g.setColor(Color.BLUE);
-    	g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
+    	if (gotImage) {
+    		g.drawImage(image, 0, 0, runner.WIDTH, runner.HEIGHT, null);
+    		g.drawImage(image4, 0, 150, runner.WIDTH, 100, null);
+    	} else {
+    		g.setColor(Color.BLACK);
+    		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
+    	}
     	g.setFont(titleFont1);
     	g.setColor(Color.YELLOW);
-    	g.drawString("Press ENTER to start", 100, 400);
+    	g.drawString("Press ENTER to start", 120, 400);
     	g.setFont(titleFont2);
     	g.setColor(Color.YELLOW);
     	g.drawString("Press SPACE for instructions", 75, 600);
@@ -69,6 +80,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     void drawGameState(Graphics g) {
     	if (gotImage) {
     		g.drawImage(image, 0, 0, runner.WIDTH, runner.HEIGHT, null);
+    		g.drawImage(image3, 0, 0, runner.WIDTH, 200, null);
     	} else {
     		g.setColor(Color.BLACK);
     		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
@@ -76,15 +88,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	manage.draw(g);
     }
     void drawEndState(Graphics g)  {
-    	g.setColor(Color.RED);
-    	g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
+    	if (gotImage) {
+    		g.drawImage(image2, 0, 0, runner.WIDTH, runner.HEIGHT, null);
+    	} else {
+    		g.setColor(Color.RED);
+    		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
+    	}
     	g.setFont(titleFont1);
     	g.setColor(Color.YELLOW);
     	g.drawString("You killed enemies", 100, 400);
     	g.setFont(titleFont2);
     	g.setColor(Color.YELLOW);
     	g.drawString("Press ENTER to restart", 75, 600);
-    	//g.drawString("Score:" + manage.getScore(), 75, 650);
+    	g.drawString("Score:" + manage.getScore(), 75, 650);
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -121,8 +137,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				}
 			} if (e.getKeyCode()==KeyEvent.VK_DOWN) {
 			    rocket.Down = true;
-			    if (rocket.y >= gameRunner.HEIGHT-rocket.height-25) {
-					rocket.y = gameRunner.HEIGHT-rocket.height-25;
+			    if (rocket.y >= runner.HEIGHT-rocket.height-25) {
+					rocket.y = runner.HEIGHT-rocket.height-25;
 				}
 			} if (e.getKeyCode()==KeyEvent.VK_LEFT) {
 			    rocket.Left = true;
@@ -131,8 +147,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				}
 			} if (e.getKeyCode()==KeyEvent.VK_RIGHT) {
 			    rocket.Right = true;
-			    if (rocket.x >= gameRunner.WIDTH-rocket.width) {
-					rocket.x = gameRunner.WIDTH-rocket.width;
+			    if (rocket.x >= runner.WIDTH-rocket.width) {
+					rocket.x = runner.WIDTH-rocket.width;
 				}			
 			} if(e.getKeyCode()==KeyEvent.VK_SPACE) {
 				//manage.addProjectile(rocket.getProjectile());
@@ -154,15 +170,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    rocket.Right = false;	
 		}
 	}
-	void loadImage(String imageFile) {
-	    if (needImage) {
-	        try {
-	            image = ImageIO.read(this.getClass().getResourceAsStream(imageFile));
-		    gotImage = true;
+	BufferedImage loadImage(String imageFile) { 
+			try {
+	        	gotImage = true;
+	        	return ImageIO.read(this.getClass().getResourceAsStream(imageFile));
 	        } catch (Exception e) {
 	            
 	        }
-	        needImage = false;
-	    }
+	    
+	    return null;
 	}
 }
