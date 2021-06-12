@@ -53,8 +53,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         image4 = loadImage("title.png");
         image5 = loadImage("end.png");
     }
+	void startGame() {
+		 alienSpawn = new Timer(1000 , manage);
+		 alienSpawn.start();
+	}
 	void updateMenuState() {
-		
+		manage.update();
+    	if (rocket.isActive==false) {
+			currentState = END;
+		}
     }
     void updateGameState() {
     	rocket.move();
@@ -123,12 +130,18 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-		    if (currentState == END) {
+			if (currentState == END) {
+		    	alienSpawn.stop();
 		        currentState = MENU;
+		        rocket = new Rocketship(250,700,50,50);
+				manage = new ObjectManager(rocket);
+		    } else if(currentState == MENU) {
+		    	startGame();
+		    	currentState++;
 		    } else {
 		        currentState++;
 		    }
-		}   
+		}
 		if (currentState == GAME) {
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
 			    rocket.Up = true;
@@ -151,7 +164,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 					rocket.x = runner.WIDTH-rocket.width;
 				}			
 			} if(e.getKeyCode()==KeyEvent.VK_SPACE) {
-				//manage.addProjectile(rocket.getProjectile());
+				manage.addProjectile(rocket.getProjectile());
 			}
 		}
 	}
