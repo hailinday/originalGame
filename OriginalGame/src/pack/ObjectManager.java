@@ -12,6 +12,8 @@ public class ObjectManager implements ActionListener {
 	Rocketship rocket;
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 	ArrayList<Alien> aliens = new ArrayList<Alien>();
+	ArrayList<laser> laser = new ArrayList<laser>();
+	ArrayList<laser2> laser2 = new ArrayList<laser2>();
 	Random random = new Random();
 	int score = 0;
 	
@@ -26,13 +28,30 @@ public class ObjectManager implements ActionListener {
 	void addAliens() {
 		aliens.add(new Alien(random.nextInt(runner.WIDTH), 0, 50, 50));
 	}
-
+	void addLaser() {
+		laser.add(new laser(random.nextInt(runner.WIDTH), -800, 75, 800));
+	}
+	void addLaser2() {
+		laser2.add(new laser2(-500,random.nextInt(runner.HEIGHT), 500, 75));
+	}
 	void update() {
 		rocket.update();
 		for (int i = 0; i < aliens.size(); i++) {
 			aliens.get(i).update();
 			if (aliens.get(i).y >= runner.HEIGHT) {
 				aliens.get(i).isActive = false;
+			}
+		}
+		for (int i = 0; i < laser.size(); i++) {
+			laser.get(i).update();
+			if (laser.get(i).y >= runner.HEIGHT) {
+				laser.get(i).isActive = false;
+			}
+		}
+		for (int i = 0; i < laser2.size(); i++) {
+			laser2.get(i).update();
+			if (laser2.get(i).y >= runner.WIDTH) {
+				laser2.get(i).isActive = false;
 			}
 		}
 		for (int i = 0; i < projectiles.size(); i++) {
@@ -50,6 +69,12 @@ public class ObjectManager implements ActionListener {
 		for (int i = 0; i < aliens.size(); i++) {
 			aliens.get(i).draw(g);
 		}
+		for (int i = 0; i < laser.size(); i++) {
+			laser.get(i).draw(g);
+		}
+		for (int i = 0; i < laser2.size(); i++) {
+			laser2.get(i).draw(g);
+		}
 		for (int i = 0; i < projectiles.size(); i++) {
 			projectiles.get(i).draw(g);
 		}
@@ -59,6 +84,16 @@ public class ObjectManager implements ActionListener {
 		for (int i = 0; i < aliens.size(); i++) {
 			if (aliens.get(i).isActive == false) {
 				aliens.remove(i);
+			}
+		}
+		for (int i = 0; i < laser.size(); i++) {
+			if (laser.get(i).isActive == false) {
+				laser.remove(i);
+			}
+		}
+		for (int i = 0; i < laser2.size(); i++) {
+			if (laser2.get(i).isActive == false) {
+				laser2.remove(i);
 			}
 		}
 		for (int j = 0; j < projectiles.size(); j++) {
@@ -91,5 +126,7 @@ public class ObjectManager implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		addAliens();
+		addLaser();
+		addLaser2();
 	}
 }

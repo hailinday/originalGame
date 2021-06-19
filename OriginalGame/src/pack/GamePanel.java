@@ -58,13 +58,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		 alienSpawn.start();
 	}
 	void updateMenuState() {
-		manage.update();
     	if (rocket.isActive==false) {
 			currentState = END;
 		}
     }
     void updateGameState() {
     	rocket.move();
+    	manage.update();
     }
     void updateEndState() {
     	
