@@ -107,7 +107,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	g.setFont(titleFont2);
     	g.setColor(Color.YELLOW);
     	g.drawString("Press ENTER to restart", 75, 600);
-    	g.drawString("Score:" + manage.getScore(), 75, 650);
+    	g.drawString("Score:" + manage.getlife(), 75, 650);
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -143,6 +143,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    }
 		}
 		if (currentState == GAME) {
+			//int life = manage.getlife();
+			//if (life == 0) {
+			//	currentState++;
+			//}
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
 			    rocket.Up = true;
 			    if (rocket.y <= 0) {

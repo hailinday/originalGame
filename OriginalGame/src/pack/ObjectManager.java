@@ -15,8 +15,8 @@ public class ObjectManager implements ActionListener {
 	ArrayList<laser> laser = new ArrayList<laser>();
 	ArrayList<laser2> laser2 = new ArrayList<laser2>();
 	Random random = new Random();
-	int score = 0;
-	
+	int life = 5;
+
 	ObjectManager(Rocketship rocket) {
 		this.rocket = rocket;
 	}
@@ -28,12 +28,15 @@ public class ObjectManager implements ActionListener {
 	void addAliens() {
 		aliens.add(new Alien(random.nextInt(runner.WIDTH), 0, 50, 50));
 	}
+
 	void addLaser() {
 		laser.add(new laser(random.nextInt(runner.WIDTH), -800, 75, 800));
 	}
+
 	void addLaser2() {
-		laser2.add(new laser2(-500,random.nextInt(runner.HEIGHT), 500, 75));
+		laser2.add(new laser2(-500, random.nextInt(runner.HEIGHT), 500, 75));
 	}
+
 	void update() {
 		rocket.update();
 		for (int i = 0; i < aliens.size(); i++) {
@@ -107,19 +110,32 @@ public class ObjectManager implements ActionListener {
 		for (int i = 0; i < aliens.size(); i++) {
 			if (rocket.collisionBox.intersects(aliens.get(i).collisionBox)) {
 				aliens.get(i).isActive = false;
-				score+=1;
+				life -= 1;
+			}
+			for (int h = 0; h < laser.size(); h++) {
+				if (rocket.collisionBox.intersects(laser.get(h).collisionBox)) {
+					laser.get(h).isActive = false;
+					life-=1;
+				}
+			}
+			for (int e = 0; e < laser2.size(); e++) {
+				if (rocket.collisionBox.intersects(laser2.get(e).collisionBox)) {
+					laser2.get(e).isActive = false;
+					life-=1;
+				}
 			}
 			for (int j = 0; j < projectiles.size(); j++) {
 				if (projectiles.get(j).collisionBox.intersects(aliens.get(i).collisionBox)) {
 					aliens.get(i).isActive = false;
 					projectiles.get(j).isActive = false;
-					score+=1;
 				}
 			}
 		}
+
 	}
-	int getScore() {
-		return score;
+
+	int getlife() {
+		return life;
 	}
 
 	@Override
