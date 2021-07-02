@@ -29,6 +29,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public static BufferedImage image3;
     public static BufferedImage image4;
     public static BufferedImage image5;
+    
    	public static boolean needImage = true;
    	public static boolean gotImage = false;	
 	@Override
@@ -97,17 +98,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     void drawEndState(Graphics g)  {
     	if (gotImage) {
     		g.drawImage(image2, 0, 0, runner.WIDTH, runner.HEIGHT, null);
+    		g.drawImage(image5, 0, 50, runner.WIDTH, 150, null);
     	} else {
     		g.setColor(Color.RED);
     		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
     	}
+    	int lifeScore = manage.getlife() + 1;
     	g.setFont(titleFont1);
     	g.setColor(Color.YELLOW);
     	g.drawString("You killed enemies", 100, 400);
     	g.setFont(titleFont2);
     	g.setColor(Color.YELLOW);
     	g.drawString("Press ENTER to restart", 75, 600);
-    	g.drawString("Score:" + manage.getlife(), 75, 650);
+    	g.drawString("Life: " + lifeScore, 75, 650);
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -143,10 +146,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    }
 		}
 		if (currentState == GAME) {
-			//int life = manage.getlife();
-			//if (life == 0) {
-			//	currentState++;
-			//}
+			int life = manage.getlife();
+			if (life < 0) {
+				currentState++;
+			}
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
 			    rocket.Up = true;
 			    if (rocket.y <= 0) {
