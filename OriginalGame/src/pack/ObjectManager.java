@@ -16,6 +16,7 @@ public class ObjectManager implements ActionListener {
 	ArrayList<laser2> laser2 = new ArrayList<laser2>();
 	Random random = new Random();
 	int life = 4;
+	int boss = 0;
 
 	ObjectManager(Rocketship rocket) {
 		this.rocket = rocket;
@@ -61,9 +62,10 @@ public class ObjectManager implements ActionListener {
 			projectiles.get(i).update();
 			if (projectiles.get(i).y <= 0) {
 				projectiles.get(i).isActive = false;
+				boss += 1;
 			}
 		}
-		System.out.println("Life " + life);
+		
 		checkCollision();
 		purgeObjects();
 	}
@@ -132,11 +134,15 @@ public class ObjectManager implements ActionListener {
 				life -= 1;
 			}
 		}
+		
 
 	}
 
 	int getlife() {
 		return life;
+	}
+	int getBoss() {
+		return boss;
 	}
 
 	@Override

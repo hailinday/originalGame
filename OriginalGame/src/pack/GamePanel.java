@@ -16,6 +16,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	final int MENU = 0;
     final int GAME = 1;
     final int END = 2;
+    final int INST = 3;
+    final int WIN = 4;
     int currentState = MENU;
     Font titleFont;
     Font titleFont1;
@@ -40,6 +42,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    drawGameState(g);
 		}else if(currentState == END){
 		    drawEndState(g);
+		} else if(currentState == INST) {
+			drawInstructionState(g);
+		} else if(currentState == WIN) {
+			drawWinState(g);
 		}
 	}
 	GamePanel() {
@@ -66,6 +72,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     void updateGameState() {
     	rocket.move();
     	manage.update();
+    	int life = manage.getlife();
+		if (life < 0) {
+			currentState++;
+		}
+		int boss = manage.getBoss();
+		if (boss >= 20) {
+			currentState = WIN;
+		}
     }
     void updateEndState() {
     	
@@ -103,6 +117,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     		g.setColor(Color.RED);
     		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
     	}
+    	int bossScore = manage.getBoss();
     	int lifeScore = manage.getlife() + 1;
     	g.setFont(titleFont1);
     	g.setColor(Color.YELLOW);
@@ -110,7 +125,37 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	g.setFont(titleFont2);
     	g.setColor(Color.YELLOW);
     	g.drawString("Press ENTER to restart", 75, 600);
-    	g.drawString("Life: " + lifeScore, 75, 650);
+    	g.drawString("Score: " + bossScore, 75, 650);
+    	g.drawString("Life: " + lifeScore, 75, 680);
+    }
+    void drawInstructionState(Graphics g) {
+    	if (gotImage) {
+    		g.drawImage(image, 0, 0, runner.WIDTH, runner.HEIGHT, null);
+    		g.drawImage(image4, 0, 150, runner.WIDTH, 100, null);
+    	} else {
+    		g.setColor(Color.BLACK);
+    		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
+    	}
+    	g.setFont(titleFont1);
+    	g.setColor(Color.YELLOW);
+    	g.drawString("Press WASD to move", 100, 400);
+    	g.drawString("and Space to shoot", 100, 450);
+    	g.setFont(titleFont2);
+    	g.setColor(Color.RED);
+    	g.drawString("Click SPACE for the menu", 75, 600);
+    }
+    void drawWinState(Graphics g) {
+    	if (gotImage) {
+    		g.drawImage(image, 0, 0, runner.WIDTH, runner.HEIGHT, null);
+    		g.drawImage(image4, 0, 150, runner.WIDTH, 100, null);
+    	} else {
+    		g.setColor(Color.BLACK);
+    		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
+    	}
+    	g.setFont(titleFont1);
+    	g.setColor(Color.YELLOW);
+    	g.drawString("You Won", 100, 400);
+    	g.drawString("Congragulations", 100, 450);
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -132,7 +177,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
+		if (currentState == MENU) {
+			if (e.getKeyCode()==KeyEvent.VK_SPACE) {
+				currentState = INST;
+			}
+		} else if (currentState == INST) {
+			if (e.getKeyCode()==KeyEvent.VK_SPACE) {
+				currentState = MENU;
+			}
+		}
 		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+			if (currentState == WIN) {
+				alienSpawn.stop();
+		        currentState = MENU;
+		        rocket = new Rocketship(250,700,50,50);
+				manage = new ObjectManager(rocket);
+			}
 			if (currentState == END) {
 		    	alienSpawn.stop();
 		        currentState = MENU;
@@ -146,10 +206,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    }
 		}
 		if (currentState == GAME) {
-			int life = manage.getlife();
-			if (life < 0) {
-				currentState++;
-			}
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
 			    rocket.Up = true;
 			    if (rocket.y <= 0) {
