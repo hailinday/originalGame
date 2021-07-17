@@ -14,6 +14,7 @@ public class ObjectManager implements ActionListener {
 	ArrayList<Alien> aliens = new ArrayList<Alien>();
 	ArrayList<laser> laser = new ArrayList<laser>();
 	ArrayList<laser2> laser2 = new ArrayList<laser2>();
+	ArrayList<med> med = new ArrayList<med>();
 	Random random = new Random();
 	int life = 4;
 	int boss = 0;
@@ -37,7 +38,10 @@ public class ObjectManager implements ActionListener {
 	void addLaser2() {
 		laser2.add(new laser2(-500, random.nextInt(runner.HEIGHT), 500, 75));
 	}
-
+	void addMed() {
+		med.add(new med(random.nextInt(runner.WIDTH), 0, 50, 50));
+	}
+	
 	void update() {
 		rocket.update();
 		for (int i = 0; i < aliens.size(); i++) {
@@ -65,6 +69,12 @@ public class ObjectManager implements ActionListener {
 				boss += 1;
 			}
 		}
+		for (int i = 0; i < med.size(); i++) {
+			med.get(i).update();
+			if (med.get(i).y >= runner.HEIGHT) {
+				med.get(i).isActive = false;
+			}
+		}
 		
 		checkCollision();
 		purgeObjects();
@@ -83,6 +93,9 @@ public class ObjectManager implements ActionListener {
 		}
 		for (int i = 0; i < projectiles.size(); i++) {
 			projectiles.get(i).draw(g);
+		}
+		for (int i = 0; i < med.size(); i++) {
+			med.get(i).draw(g);
 		}
 	}
 
@@ -105,6 +118,11 @@ public class ObjectManager implements ActionListener {
 		for (int j = 0; j < projectiles.size(); j++) {
 			if (projectiles.get(j).isActive == false) {
 				projectiles.remove(j);
+			}
+		}
+		for (int i = 0; i < med.size(); i++) {
+			if (med.get(i).isActive == false) {
+				med.remove(i);
 			}
 		}
 	}
@@ -134,7 +152,12 @@ public class ObjectManager implements ActionListener {
 				life -= 1;
 			}
 		}
-		
+		for (int i = 0; i < med.size(); i++) {
+			if (rocket.collisionBox.intersects(med.get(i).collisionBox) && med.get(i).isActive) {
+				med.get(i).isActive = false;
+				life += 1;
+			}
+		}
 
 	}
 
@@ -148,8 +171,13 @@ public class ObjectManager implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		addAliens();
-		addLaser();
-		addLaser2();
+		if(e.getSource()== GamePanel.medSpawn) {
+			addMed();
+		}
+		if(e.getSource()==GamePanel.rocketSpawn) {
+			addAliens();
+			addLaser();
+			addLaser2();
+		}
 	}
 }

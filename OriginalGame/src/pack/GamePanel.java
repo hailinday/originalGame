@@ -22,8 +22,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     Font titleFont;
     Font titleFont1;
     Font titleFont2;
-    Timer frameDraw;
-    Timer alienSpawn;
+    static Timer frameDraw;
+    static Timer rocketSpawn;
+    static Timer medSpawn;
     Rocketship rocket = new Rocketship(250,700,50,50);
     ObjectManager manage = new ObjectManager(rocket);
     public static BufferedImage image;
@@ -61,8 +62,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         image5 = loadImage("end.png");
     }
 	void startGame() {
-		 alienSpawn = new Timer(1000 , manage);
-		 alienSpawn.start();
+		 rocketSpawn = new Timer(1000 , manage);
+		 rocketSpawn.start();
+		 medSpawn = new Timer(5000 , manage);
+		 medSpawn.start();
 	}
 	void updateMenuState() {
     	if (rocket.isActive==false) {
@@ -107,6 +110,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     		g.setColor(Color.BLACK);
     		g.fillRect(0, 0, runner.WIDTH, runner.HEIGHT);
     	}
+    	int lifeScore = manage.getlife() + 1;
+    	int bossScore = manage.getBoss();
+    	g.setFont(titleFont1);
+    	g.setColor(Color.YELLOW);
+    	g.drawString("Life: " + lifeScore, 10, 30);
+    	g.drawString("Score: " + bossScore, 10, 55);
     	manage.draw(g);
     }
     void drawEndState(Graphics g)  {
@@ -188,22 +197,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		}
 		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 			if (currentState == WIN) {
-				alienSpawn.stop();
-		        currentState = MENU;
+				rocketSpawn.stop();
+		        currentState = END;
 		        rocket = new Rocketship(250,700,50,50);
 				manage = new ObjectManager(rocket);
 			}
 			if (currentState == END) {
-		    	alienSpawn.stop();
+		    	rocketSpawn.stop();
 		        currentState = MENU;
 		        rocket = new Rocketship(250,700,50,50);
 				manage = new ObjectManager(rocket);
 		    } else if(currentState == MENU) {
 		    	startGame();
 		    	currentState++;
-		    } else {
-		        currentState++;
-		    }
+		    }// else {
+		    //    currentState++;
+		   // }
 		}
 		if (currentState == GAME) {
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
