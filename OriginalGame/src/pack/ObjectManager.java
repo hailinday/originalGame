@@ -3,9 +3,14 @@ package pack;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 import java.util.Arrays;
 
 public class ObjectManager implements ActionListener {
@@ -132,6 +137,7 @@ public class ObjectManager implements ActionListener {
 			if (rocket.collisionBox.intersects(aliens.get(i).collisionBox) && aliens.get(i).isActive) {
 				aliens.get(i).isActive = false;
 				life -= 1;
+				playSound("hit.wav");
 			}
 			for (int j = 0; j < projectiles.size(); j++) {
 				if (projectiles.get(j).collisionBox.intersects(aliens.get(i).collisionBox) && projectiles.get(j).isActive) {
@@ -144,6 +150,7 @@ public class ObjectManager implements ActionListener {
 			if (rocket.collisionBox.intersects(laser.get(h).collisionBox) && laser.get(h).isActive) {
 				laser.get(h).isActive = false;
 				life -= 1;
+				playSound("hit.wav");
 			}
 		}
 		for (int e = 0; e < laser2.size(); e++) {
@@ -156,6 +163,7 @@ public class ObjectManager implements ActionListener {
 			if (rocket.collisionBox.intersects(med.get(i).collisionBox) && med.get(i).isActive) {
 				med.get(i).isActive = false;
 				life += 1;
+				playSound("med.wav");
 			}
 		}
 
@@ -180,4 +188,26 @@ public class ObjectManager implements ActionListener {
 			addLaser2();
 		}
 	}
+	private static Thread playSound(String soundFile) {
+        String path = "src/test/";
+        File sound = new File(path + soundFile);
+        
+        Thread t = new Thread(() -> {
+            try {
+                Clip clip = AudioSystem.getClip();
+                clip.open(AudioSystem.getAudioInputStream(sound));
+                clip.start();
+                Thread.sleep(clip.getMicrosecondLength() / 1000);
+            } catch (Exception e) {
+                System.out.println("Could not play this sound");
+            }
+        });
+        
+        if (sound.exists()) {
+            t.start();
+        } else {
+            System.out.println("File does not exist");
+        }
+        return t;
+    }
 }

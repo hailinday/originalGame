@@ -7,8 +7,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -22,6 +25,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     Font titleFont;
     Font titleFont1;
     Font titleFont2;
+    boolean isPlaying = false;
     static Timer frameDraw;
     static Timer rocketSpawn;
     static Timer medSpawn;
@@ -203,18 +207,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				manage = new ObjectManager(rocket);
 			}
 			if (currentState == END) {
-		    	rocketSpawn.stop();
+				rocketSpawn.stop();
 		        currentState = MENU;
 		        rocket = new Rocketship(250,700,50,50);
 				manage = new ObjectManager(rocket);
 		    } else if(currentState == MENU) {
 		    	startGame();
 		    	currentState++;
-		    }// else {
-		    //    currentState++;
-		   // }
+		    }
 		}
 		if (currentState == GAME) {
+			if (isPlaying == false) {
+				playSound("music.wav");
+				isPlaying = true;
+			}
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
 			    rocket.Up = true;
 			    if (rocket.y <= 0) {
@@ -237,6 +243,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				}			
 			} if(e.getKeyCode()==KeyEvent.VK_SPACE) {
 				manage.addProjectile(rocket.getProjectile());
+				playSound("laser.wav");
 			}
 		}
 	}
@@ -265,4 +272,27 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	    
 	    return null;
 	}
+
+	private static Thread playSound(String soundFile) {
+        String path = "src/test/";
+        File sound = new File(path + soundFile);
+        
+        Thread t = new Thread(() -> {
+            try {
+                Clip clip = AudioSystem.getClip();
+                clip.open(AudioSystem.getAudioInputStream(sound));
+                clip.start();
+                Thread.sleep(clip.getMicrosecondLength() / 1000);
+            } catch (Exception e) {
+                System.out.println("Could not play this sound");
+            }
+        });
+        
+        if (sound.exists()) {
+            t.start();
+        } else {
+            System.out.println("File does not exist");
+        }
+        return t;
+    }
 }
