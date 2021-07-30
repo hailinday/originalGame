@@ -189,7 +189,7 @@ public class ObjectManager implements ActionListener {
 		}
 	}
 	private static Thread playSound(String soundFile) {
-        String path = "src/test/";
+        String path = "src/pack/";
         File sound = new File(path + soundFile);
         
         Thread t = new Thread(() -> {

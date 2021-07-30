@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener { 
+	Thread music = playSound("music.wav");
 	final int MENU = 0;
     final int GAME = 1;
     final int END = 2;
@@ -75,6 +76,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     	if (rocket.isActive==false) {
 			currentState = END;
 		}
+    	
     }
     void updateGameState() {
     	rocket.move();
@@ -207,7 +209,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				manage = new ObjectManager(rocket);
 			}
 			if (currentState == END) {
-				rocketSpawn.stop();
 		        currentState = MENU;
 		        rocket = new Rocketship(250,700,50,50);
 				manage = new ObjectManager(rocket);
@@ -218,7 +219,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		}
 		if (currentState == GAME) {
 			if (isPlaying == false) {
-				playSound("music.wav");
 				isPlaying = true;
 			}
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
@@ -274,7 +274,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 
 	private static Thread playSound(String soundFile) {
-        String path = "src/test/";
+        String path = "src/pack/";
         File sound = new File(path + soundFile);
         
         Thread t = new Thread(() -> {
